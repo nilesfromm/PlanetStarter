@@ -1,7 +1,7 @@
 {
-  "name": "vite_p5_boilerplate",
+  "name": "planetgradient",
   "version": "0.0.0",
-  "main": "src/mainClass",
+  "main": "src/planet",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

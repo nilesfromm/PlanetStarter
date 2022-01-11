@@ -21,7 +21,7 @@ const isMobile = () => {
 	return "ontouchstart" in document.documentElement;
 };
 
-export class Itheum {
+export class PlanetGradient {
 	private viewport: HTMLElement;
 	private canvas!: p5.Renderer;
 	private shader!: p5.Shader;
@@ -333,12 +333,12 @@ export class Itheum {
 
 declare global {
 	interface Window {
-		Itheum: typeof Itheum;
-		onItheumLoaded: () => void;
+		PlanetGradient: typeof PlanetGradient;
+		onPlanetGradientLoaded: () => void;
 	}
 }
 
 if (import.meta.env.MODE === "iife") {
-	window.Itheum = Itheum;
-	window.onItheumLoaded && window.onItheumLoaded();
+	window.PlanetGradient = PlanetGradient;
+	window.onPlanetGradientLoaded && window.onPlanetGradientLoaded();
 }

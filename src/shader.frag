@@ -44,7 +44,7 @@ void main() {
     }
 
     float d = smoothstep(0.0,1.0,dist(center.xy,gl_FragCoord.xy)*0.05);
-    vec4 final = mix(vec4(1.0, 1.0, 1.0, 0.0), vec4(0.75, 0.5, 1.0, 1.0), intensity);
+    vec4 final = mix(vec4(0.894, 0.0, 0.38, 1.0), vec4(0.0, 0.6157, 0.886, 1.0), intensity);
 
     gl_FragColor=vec4(final);
 }

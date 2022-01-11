@@ -1,6 +1,6 @@
 import "./style.css";
-import { Itheum } from "./itheum";
+import { PlanetGradient } from "./planet";
 
 window.onload = () => {
-  new Itheum(document.getElementsByClassName("viewport")[0] as HTMLElement, 1500, 2000);
+  new PlanetGradient(document.getElementsByClassName("viewport")[0] as HTMLElement, 1500, 2000);
 };
