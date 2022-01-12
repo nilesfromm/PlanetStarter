@@ -12,16 +12,16 @@ import fShader from "./shader.frag?raw";
 // 	draw: () => void;
 // }
 
-// const isMobile = () => {
-// 	return "ontouchstart" in document.documentElement;
-// };
+const isMobile = () => {
+	return "ontouchstart" in document.documentElement;
+};
 
 export class PlanetGradient {
 	private viewport: HTMLElement;
 	private canvas!: p5.Renderer;
 	private shader!: p5.Shader;
 	private debug: boolean;
-	// private mobile: boolean;
+	private mobile: boolean;
 	// private points: IOrbitPoint[];
 	private u_red: number[];
 	private u_blue: number[];
@@ -32,7 +32,7 @@ export class PlanetGradient {
 	constructor($viewport: HTMLElement) {
 		this.debug = false;
 		this.viewport = $viewport;
-		// this.mobile = isMobile();
+		this.mobile = isMobile();
 		this.canvas;
 		this.shader;
 		this.u_red = [0.894, 0.0, 0.38];
@@ -42,7 +42,7 @@ export class PlanetGradient {
 
 		// window.addEventListener("scroll", this.updateScroll);
 		new p5(this.sketch, this.viewport);
-		// console.log(isMobile());
+		console.log(this.mobile);
 	}
 
 	sketch = (p: p5) => {
