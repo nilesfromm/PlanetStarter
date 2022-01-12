@@ -75,7 +75,7 @@ export class PlanetGradient {
 				x: p.mouseX / p.width - 0.5,
 				y: p.mouseY / p.height - 0.5
 			}
-			let pos = [mouse.x*0.25 - 0.75, mouse.y*0.5 * mouse.x, mouse.x*0.25 + 0.75, mouse.y*0.5  * -mouse.x]
+			let pos = [mouse.x*0.35 - 0.5, mouse.y*0.5 * mouse.x, mouse.x*0.35 + 0.5, mouse.y*0.5  * -mouse.x]
 
 			console.log(p.mouseX / p.width - 0.5);
 			this.shader.setUniform("u_resolution", [p.width, p.height]);

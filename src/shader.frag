@@ -32,7 +32,7 @@ void main() {
 
     vec2 coord = gl_FragCoord.xy/u_resolution;
     coord -= 0.5; // <-0.5,0.5>
-    coord.x *= u_resolution.x/u_resolution.y; // fix aspect ratio
+    coord.y *= u_resolution.y/u_resolution.x; // fix aspect ratio
 
     vec4 totalColor = vec4(0.0, 0.0, 0.0, 0.0);
     // vec2 center = u_resolution * 0.5;
@@ -47,8 +47,8 @@ void main() {
 
     for(int i = 0; i < 2; i++){
         float d = dist(u_pos[i],coord);
-        float ratio = d / ((abs((mp.x - 0.5) + u_pos[i].x)+0.5) * 0.5); //0.25;
-        float intensity = ((abs((mp.x - 0.5) + u_pos[i].x)+1.5) * 0.25) * smoothstep(1.0, 0.0, ratio) / 2.; //1.0 - clamp(ratio, 0.0, 1.0);
+        float ratio = d / ((abs((mp.x - 0.5) + u_pos[i].x)+0.4) * 0.5); //0.25;
+        float intensity = ((abs((mp.x - 0.5) + u_pos[i].x)+1.) * 0.5) * smoothstep(1.0, 0.0, ratio) / 2.; //1.0 - clamp(ratio, 0.0, 1.0);
         totalColor.x = totalColor.x + u_color[i].x * intensity;
         totalColor.y = totalColor.y + u_color[i].y * intensity;
         totalColor.z = totalColor.z + u_color[i].z * intensity;

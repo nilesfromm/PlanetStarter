@@ -785,7 +785,7 @@ void main() {
 
     vec2 coord = gl_FragCoord.xy/u_resolution;
     coord -= 0.5; // <-0.5,0.5>
-    coord.x *= u_resolution.x/u_resolution.y; // fix aspect ratio
+    coord.y *= u_resolution.y/u_resolution.x; // fix aspect ratio
 
     vec4 totalColor = vec4(0.0, 0.0, 0.0, 0.0);
     // vec2 center = u_resolution * 0.5;
@@ -800,8 +800,8 @@ void main() {
 
     for(int i = 0; i < 2; i++){
         float d = dist(u_pos[i],coord);
-        float ratio = d / ((abs((mp.x - 0.5) + u_pos[i].x)+0.5) * 0.5); //0.25;
-        float intensity = ((abs((mp.x - 0.5) + u_pos[i].x)+1.5) * 0.25) * smoothstep(1.0, 0.0, ratio) / 2.; //1.0 - clamp(ratio, 0.0, 1.0);
+        float ratio = d / ((abs((mp.x - 0.5) + u_pos[i].x)+0.4) * 0.5); //0.25;
+        float intensity = ((abs((mp.x - 0.5) + u_pos[i].x)+1.) * 0.5) * smoothstep(1.0, 0.0, ratio) / 2.; //1.0 - clamp(ratio, 0.0, 1.0);
         totalColor.x = totalColor.x + u_color[i].x * intensity;
         totalColor.y = totalColor.y + u_color[i].y * intensity;
         totalColor.z = totalColor.z + u_color[i].z * intensity;
@@ -817,4 +817,4 @@ void main() {
     );
 
     gl_FragColor=vec4(final);
-}`;const Ln=()=>"ontouchstart"in document.documentElement;class Br{constructor(it){It(this,"viewport");It(this,"canvas");It(this,"shader");It(this,"debug");It(this,"mobile");It(this,"u_red");It(this,"u_blue");It(this,"sketch",it=>{it.setup=()=>{this.canvas=it.createCanvas(window.innerWidth,window.innerHeight,it.WEBGL);const x=this.canvas.canvas.getContext("webgl");x.disable(x.DEPTH_TEST),it.colorMode(it.RGB),it.noStroke(),it.pixelDensity(1),it.smooth();let m=new D(.25,-.25,1,0,0);console.log(m.pos),this.shader=it.createShader(Cn,On)},it.draw=()=>{it.background(0),it.noStroke();let x={x:it.mouseX/it.width-.5,y:it.mouseY/it.height-.5},m=[x.x*.25-.75,x.y*.5*x.x,x.x*.25+.75,x.y*.5*-x.x];console.log(it.mouseX/it.width-.5),this.shader.setUniform("u_resolution",[it.width,it.height]),this.shader.setUniform("u_mouse",[it.mouseX,it.mouseY]),this.shader.setUniform("u_red",this.u_red),this.shader.setUniform("u_blue",this.u_blue),this.shader.setUniform("u_pos",m),this.shader.setUniform("u_color",[.894,0,.38,0,.6157,.886]),it.shader(this.shader),it.rect(0,0,0,0),it.resetShader(),this.debug&&(it.fill(255),it.ellipse(m[0]*(it.width/2),m[1]*it.height*-1,50),it.ellipse(m[2]*(it.width/2),m[3]*it.height*-1,50))},it.windowResized=()=>{this.debug&&console.log(`resized ${window.innerWidth}, ${window.innerHeight}`),it.resizeCanvas(window.innerWidth,window.innerHeight)};const r=()=>{};window.addEventListener("scroll",r);class D{constructor(m,i,c,f,d){It(this,"pos");It(this,"color");this.pos=[m,i],this.color=[c,f,d]}}});this.debug=!1,this.viewport=it,this.mobile=Ln(),this.canvas,this.shader,this.u_red=[.894,0,.38],this.u_blue=[0,.6157,.886],new Tn(this.sketch,this.viewport),console.log(this.mobile)}}return window.PlanetGradient=Br,window.onPlanetGradientLoaded&&window.onPlanetGradientLoaded(),Ut.PlanetGradient=Br,Object.defineProperty(Ut,"__esModule",{value:!0}),Ut[Symbol.toStringTag]="Module",Ut}({});
+}`;const Ln=()=>"ontouchstart"in document.documentElement;class Br{constructor(it){It(this,"viewport");It(this,"canvas");It(this,"shader");It(this,"debug");It(this,"mobile");It(this,"u_red");It(this,"u_blue");It(this,"sketch",it=>{it.setup=()=>{this.canvas=it.createCanvas(window.innerWidth,window.innerHeight,it.WEBGL);const x=this.canvas.canvas.getContext("webgl");x.disable(x.DEPTH_TEST),it.colorMode(it.RGB),it.noStroke(),it.pixelDensity(1),it.smooth();let m=new D(.25,-.25,1,0,0);console.log(m.pos),this.shader=it.createShader(Cn,On)},it.draw=()=>{it.background(0),it.noStroke();let x={x:it.mouseX/it.width-.5,y:it.mouseY/it.height-.5},m=[x.x*.35-.5,x.y*.5*x.x,x.x*.35+.5,x.y*.5*-x.x];console.log(it.mouseX/it.width-.5),this.shader.setUniform("u_resolution",[it.width,it.height]),this.shader.setUniform("u_mouse",[it.mouseX,it.mouseY]),this.shader.setUniform("u_red",this.u_red),this.shader.setUniform("u_blue",this.u_blue),this.shader.setUniform("u_pos",m),this.shader.setUniform("u_color",[.894,0,.38,0,.6157,.886]),it.shader(this.shader),it.rect(0,0,0,0),it.resetShader(),this.debug&&(it.fill(255),it.ellipse(m[0]*(it.width/2),m[1]*it.height*-1,50),it.ellipse(m[2]*(it.width/2),m[3]*it.height*-1,50))},it.windowResized=()=>{this.debug&&console.log(`resized ${window.innerWidth}, ${window.innerHeight}`),it.resizeCanvas(window.innerWidth,window.innerHeight)};const r=()=>{};window.addEventListener("scroll",r);class D{constructor(m,i,c,f,d){It(this,"pos");It(this,"color");this.pos=[m,i],this.color=[c,f,d]}}});this.debug=!1,this.viewport=it,this.mobile=Ln(),this.canvas,this.shader,this.u_red=[.894,0,.38],this.u_blue=[0,.6157,.886],new Tn(this.sketch,this.viewport),console.log(this.mobile)}}return window.PlanetGradient=Br,window.onPlanetGradientLoaded&&window.onPlanetGradientLoaded(),Ut.PlanetGradient=Br,Object.defineProperty(Ut,"__esModule",{value:!0}),Ut[Symbol.toStringTag]="Module",Ut}({});
