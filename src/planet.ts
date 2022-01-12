@@ -1,12 +1,7 @@
-import { fill, random } from "lodash";
+// import { fill, random } from "lodash";
 import p5 from "p5";
 import vShader from "./shader.vert?raw";
 import fShader from "./shader.frag?raw";
-
-interface ICoordinate {
-	x: number;
-	y: number;
-}
 
 // interface IOrbitPoint {
 // 	current: p5.Vector;
@@ -17,41 +12,33 @@ interface ICoordinate {
 // 	draw: () => void;
 // }
 
-const isMobile = () => {
-	return "ontouchstart" in document.documentElement;
-};
+// const isMobile = () => {
+// 	return "ontouchstart" in document.documentElement;
+// };
 
 export class PlanetGradient {
 	private viewport: HTMLElement;
 	private canvas!: p5.Renderer;
 	private shader!: p5.Shader;
 	private debug: boolean;
-	private mobile: boolean;
-	private scale: number;
+	// private mobile: boolean;
 	// private points: IOrbitPoint[];
-	private u_x: number[];
-	private u_y: number[];
-	private u_r: number[];
 	private u_red: number[];
 	private u_blue: number[];
 	// private u_c: Object[];
-	private time: number;
-	private scrollVal: number;
+	// private time: number;
+	// private scrollVal: number;
 
 	constructor($viewport: HTMLElement) {
 		this.debug = false;
 		this.viewport = $viewport;
-		this.mobile = isMobile();
+		// this.mobile = isMobile();
 		this.canvas;
 		this.shader;
-		this.scale = 0.75;
-		this.u_x = new Array<number>(10).fill(0);
-		this.u_y = new Array<number>(10).fill(0);
-		this.u_r = new Array<number>(10).fill(0);
 		this.u_red = [0.894, 0.0, 0.38];
 		this.u_blue = [0.0, 0.6157, 0.886];
-		this.time = 0;
-		this.scrollVal = 100;
+		// this.time = 0;
+		// this.scrollVal = 100;
 
 		// window.addEventListener("scroll", this.updateScroll);
 		new p5(this.sketch, this.viewport);
@@ -61,7 +48,6 @@ export class PlanetGradient {
 	sketch = (p: p5) => {
 
 		p.setup = () => {
-			this.scale = p.windowWidth / 2000;
 			this.canvas = p.createCanvas(
 				window.innerWidth,
 				window.innerHeight,
@@ -113,7 +99,7 @@ export class PlanetGradient {
 				p.ellipse(pos[2] * (p.width / 2), pos[3] * (p.height) * -1,50);
 			}
 
-			this.time += 0.0015;
+			// this.time += 0.0015;
 		};
 
 		p.windowResized = () => {
