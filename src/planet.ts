@@ -1,7 +1,7 @@
 // import { fill, random } from "lodash";
 import p5 from "p5";
-import vShader from "./shader.vert?raw";
-import fShader from "./shader.frag?raw";
+import vShader from "./shader1.vert?raw";
+import fShader from "./shader1.frag?raw";
 
 // interface IOrbitPoint {
 // 	current: p5.Vector;
@@ -19,6 +19,7 @@ const isMobile = () => {
 export class PlanetGradient {
 	private viewport: HTMLElement;
 	private canvas!: p5.Renderer;
+	private buffer_1!: p5.Graphics;
 	private shader!: p5.Shader;
 	private debug: boolean;
 	private mobile: boolean;
@@ -34,6 +35,7 @@ export class PlanetGradient {
 		this.viewport = $viewport;
 		this.mobile = isMobile();
 		this.canvas;
+		this.buffer_1;
 		this.shader;
 		this.u_red = [0.894, 0.0, 0.38];
 		this.u_blue = [0.0, 0.6157, 0.886];
@@ -46,24 +48,34 @@ export class PlanetGradient {
 	}
 
 	sketch = (p: p5) => {
+		p.preload = () => {
+			this.shader = p.loadShader('src/shader1.vert', 'src/shader1.frag');
+		}
 
 		p.setup = () => {
 			this.canvas = p.createCanvas(
 				window.innerWidth,
+				window.innerHeight
+				// p.WEBGL
+			);
+			this.buffer_1 = p.createGraphics(
+				window.innerWidth,
 				window.innerHeight,
 				p.WEBGL
 			);
-			const gl: any = (this.canvas as any).canvas.getContext("webgl");
-			gl.disable(gl.DEPTH_TEST);
+			this.buffer_1.noStroke();
+
+			// const gl: any = (this.canvas as any).canvas.getContext("webgl");
+			// gl.disable(gl.DEPTH_TEST);
 			p.colorMode(p.RGB);
 			p.noStroke();
 			p.pixelDensity(1);
 			p.smooth();
 
-			let test = new GPoint(0.25,-0.25,1,0,0);
-			console.log(test.pos);
+			let test = new GPoint(0.25, -0.25, 1, 0, 0);
+			// console.log(test.pos);
 
-			this.shader = p.createShader(vShader, fShader);
+			
 		};
 
 		p.draw = () => {
@@ -73,13 +85,18 @@ export class PlanetGradient {
 			// let pos = [0.1,-0.1,-0.1,0.1];
 			let mouse = {
 				x: p.mouseX / p.width - 0.5,
-				y: p.mouseY / p.height - 0.5
-			}
-			let pos = [mouse.x*0.35 - 0.5, mouse.y*0.5 * mouse.x, mouse.x*0.35 + 0.5, mouse.y*0.5  * -mouse.x]
+				y: p.mouseY / p.height - 0.5,
+			};
+			let pos = [
+				mouse.x * 0.35 - 0.5,
+				mouse.y * 0.5 * mouse.x,
+				mouse.x * 0.35 + 0.5,
+				mouse.y * 0.5 * -mouse.x,
+			];
 
-			console.log(p.mouseX / p.width - 0.5);
+			// console.log(p.mouseX / p.width - 0.5);
 			this.shader.setUniform("u_resolution", [p.width, p.height]);
-			this.shader.setUniform("u_mouse", [p.mouseX,p.mouseY]);
+			this.shader.setUniform("u_mouse", [p.mouseX, p.mouseY]);
 			this.shader.setUniform("u_red", this.u_red);
 			this.shader.setUniform("u_blue", this.u_blue);
 			this.shader.setUniform("u_pos", pos);
@@ -89,14 +106,20 @@ export class PlanetGradient {
 			// this.shader.setUniform("u_y", this.u_y);
 			// this.shader.setUniform("u_r", this.u_r);
 
-			p.shader(this.shader);
-			p.rect(0, 0, 0, 0);
-			p.resetShader();
+			// p.shader(this.shader);
+			// p.rect(0, 0, 0, 0);
+			// p.resetShader();
 
-			if(this.debug){
+			this.buffer_1.background(250,50,0);
+			this.buffer_1.shader(this.shader);
+			this.buffer_1.rect(0, 0, p.width, p.height);
+			p.image(this.buffer_1, 0,0);
+			// p.resetShader();
+
+			if (this.debug) {
 				p.fill(255);
-				p.ellipse(pos[0] * (p.width / 2), pos[1] * (p.height) * -1,50);
-				p.ellipse(pos[2] * (p.width / 2), pos[3] * (p.height) * -1,50);
+				p.ellipse(pos[0] * (p.width / 2), pos[1] * p.height * -1, 50);
+				p.ellipse(pos[2] * (p.width / 2), pos[3] * p.height * -1, 50);
 			}
 
 			// this.time += 0.0015;
@@ -132,20 +155,19 @@ export class PlanetGradient {
 				_y: number,
 				_r: number,
 				_g: number,
-				_b: number,
+				_b: number
 				// _radius: number,
 				// _offset: number,
 				// _mobile: boolean,
 			) {
-				this.pos = [ _x, _y ];
-				this.color = [ _r, _g, _b ];
+				this.pos = [_x, _y];
+				this.color = [_r, _g, _b];
 				// this.radius = _radius;
 				// this.offset = _offset;
 				// this.mobile = _mobile;
 				// this.setScroll(100);
 			}
 		}
-
 	};
 }
 
