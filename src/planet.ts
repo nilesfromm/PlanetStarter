@@ -1,16 +1,13 @@
-// import { fill, random } from "lodash";
 import p5 from "p5";
-import vShader from "./shader1.vert?raw";
-import fShader from "./shader1.frag?raw";
+import vShader1 from "./shader1.vert?raw";
+import fShader1 from "./shader1.frag?raw";
+import vShader2 from "./shader2.vert?raw";
+import fShader2 from "./shader2.frag?raw";
 
-// interface IOrbitPoint {
-// 	current: p5.Vector;
-// 	lineDist: number;
-
-// 	setScroll: (_scroll: number) => void;
-// 	update: (_time: number) => void;
-// 	draw: () => void;
-// }
+interface IMouse {
+	x: number;
+	y: number;
+}
 
 const isMobile = () => {
 	return "ontouchstart" in document.documentElement;
@@ -20,15 +17,15 @@ export class PlanetGradient {
 	private viewport: HTMLElement;
 	private canvas!: p5.Renderer;
 	private buffer_1!: p5.Graphics;
-	private shader!: p5.Shader;
+	private buffer_2!: p5.Graphics;
+	private shader1!: p5.Shader;
+	private shader2!: p5.Shader;
 	private debug: boolean;
 	private mobile: boolean;
-	// private points: IOrbitPoint[];
-	private u_red: number[];
-	private u_blue: number[];
-	// private u_c: Object[];
-	// private time: number;
-	// private scrollVal: number;
+	private mouse: IMouse;
+	private mouseDist: number;
+	private scroll: number;
+	private scrollOff: IMouse;
 
 	constructor($viewport: HTMLElement) {
 		this.debug = false;
@@ -36,21 +33,23 @@ export class PlanetGradient {
 		this.mobile = isMobile();
 		this.canvas;
 		this.buffer_1;
-		this.shader;
-		this.u_red = [0.894, 0.0, 0.38];
-		this.u_blue = [0.0, 0.6157, 0.886];
-		// this.time = 0;
-		// this.scrollVal = 100;
+		this.buffer_2;
+		this.shader1;
+		this.shader2;
+		this.mouse = { x: 0, y: 0 };
+		this.mouseDist = 0;
+		this.scroll = 0;
+		this.scrollOff = { x: 0.75, y: 0.0 };
 
-		// window.addEventListener("scroll", this.updateScroll);
 		new p5(this.sketch, this.viewport);
 		console.log(this.mobile);
 	}
 
 	sketch = (p: p5) => {
 		p.preload = () => {
-			this.shader = p.loadShader('src/shader1.vert', 'src/shader1.frag');
-		}
+			// this.shader1 = p.loadShader("src/shader1.vert", "src/shader1.frag");
+			// this.shader2 = p.loadShader("src/shader2.vert", "src/shader2.frag");
+		};
 
 		p.setup = () => {
 			this.canvas = p.createCanvas(
@@ -63,111 +62,118 @@ export class PlanetGradient {
 				window.innerHeight,
 				p.WEBGL
 			);
+			this.buffer_2 = p.createGraphics(
+				window.innerWidth,
+				window.innerHeight,
+				p.WEBGL
+			);
 			this.buffer_1.noStroke();
+			this.buffer_2.noStroke();
+			this.buffer_1.pixelDensity(1);
+			this.buffer_2.pixelDensity(1);
+			this.scroll = 1;
 
-			// const gl: any = (this.canvas as any).canvas.getContext("webgl");
-			// gl.disable(gl.DEPTH_TEST);
+			this.scrollOff.x = p.sin(1) * 0.75;
+			this.scrollOff.y = p.cos(1) * 0.5;
+
 			p.colorMode(p.RGB);
 			p.noStroke();
 			p.pixelDensity(1);
 			p.smooth();
-
-			let test = new GPoint(0.25, -0.25, 1, 0, 0);
-			// console.log(test.pos);
-
-			
+			this.shader1 = this.buffer_1.createShader(vShader1, fShader1);
+			this.shader2 = this.buffer_2.createShader(vShader2, fShader2);
 		};
 
 		p.draw = () => {
-			p.background(0);
-			p.noStroke();
-
-			// let pos = [0.1,-0.1,-0.1,0.1];
 			let mouse = {
 				x: p.mouseX / p.width - 0.5,
 				y: p.mouseY / p.height - 0.5,
 			};
+
 			let pos = [
-				mouse.x * 0.35 - 0.5,
-				mouse.y * 0.5 * mouse.x,
-				mouse.x * 0.35 + 0.5,
-				mouse.y * 0.5 * -mouse.x,
+				mouse.x * 0.5 - this.scrollOff.x,
+				mouse.y * 0.5 * mouse.x + this.scrollOff.y,
+				mouse.x * 0.5 + this.scrollOff.x,
+				mouse.y * 0.5 * -mouse.x - this.scrollOff.y,
 			];
 
-			// console.log(p.mouseX / p.width - 0.5);
-			this.shader.setUniform("u_resolution", [p.width, p.height]);
-			this.shader.setUniform("u_mouse", [p.mouseX, p.mouseY]);
-			this.shader.setUniform("u_red", this.u_red);
-			this.shader.setUniform("u_blue", this.u_blue);
-			this.shader.setUniform("u_pos", pos);
-			this.shader.setUniform("u_color", [0.894, 0.0, 0.38, 0.0, 0.6157, 0.886]);
-			// this.shader.setUniform("u_scroll", this.scrollVal);
-			// this.shader.setUniform("u_x", this.u_x);
-			// this.shader.setUniform("u_y", this.u_y);
-			// this.shader.setUniform("u_r", this.u_r);
+			this.mouseDist = p.sqrt(p.movedX * p.movedX + p.movedY * p.movedY);
+			this.mouseDist = p.constrain(this.mouseDist, 0, 2) / 2;
 
-			// p.shader(this.shader);
-			// p.rect(0, 0, 0, 0);
-			// p.resetShader();
+			console.log(p.width, p.height);
+			this.buffer_1.shader(this.shader1);
 
-			this.buffer_1.background(250,50,0);
-			this.buffer_1.shader(this.shader);
+			this.shader1.setUniform("u_resolution", [p.width, p.height]);
+			this.shader1.setUniform("u_mouse", [this.mouse.x, this.mouse.y]);
+			this.shader1.setUniform("u_mouseDist", this.mouseDist);
+			this.shader1.setUniform(
+				"u_color",
+				[0.894, 0.0, 0.38, 0.0, 0.6157, 0.886]
+			);
+			this.shader1.setUniform("u_pos", pos);
+			this.shader1.setUniform("u_buffer", this.buffer_1);
+
 			this.buffer_1.rect(0, 0, p.width, p.height);
-			p.image(this.buffer_1, 0,0);
-			// p.resetShader();
+			this.buffer_2.shader(this.shader2);
+
+			this.shader2.setUniform("u_resolution", [p.width, p.height]);
+			this.shader2.setUniform("u_mouse", [this.mouse.x, this.mouse.y]);
+			this.shader2.setUniform("u_buffer", this.buffer_1);
+			this.shader2.setUniform(
+				"u_color",
+				[0.894, 0.0, 0.38, 0.0, 0.6157, 0.886]
+			);
+			this.shader2.setUniform("u_pos", pos);
+
+			this.buffer_2.rect(0, 0, p.width, p.height);
+
+			p.image(this.buffer_2, 0, 0);
 
 			if (this.debug) {
 				p.fill(255);
-				p.ellipse(pos[0] * (p.width / 2), pos[1] * p.height * -1, 50);
-				p.ellipse(pos[2] * (p.width / 2), pos[3] * p.height * -1, 50);
+				let xOffset = p.width / 2;
+				let yOffset = p.height / 2;
+				p.ellipse(xOffset + pos[0] * xOffset, yOffset - pos[1] * yOffset, 50);
+				p.ellipse(xOffset + pos[2] * xOffset, yOffset - pos[3] * yOffset, 50);
+				p.ellipse(xOffset, yOffset, 10);
 			}
-
-			// this.time += 0.0015;
 		};
 
 		p.windowResized = () => {
-			// this.scale = p.windowWidth / 2000;
-			if (this.debug) {
-				console.log(`resized ${window.innerWidth}, ${window.innerHeight}`);
-			}
 			p.resizeCanvas(window.innerWidth, window.innerHeight);
-			// this.x = window.innerWidth / 2;
-			// this.y = window.innerHeight / 2;
+			this.buffer_1.resizeCanvas(window.innerWidth, window.innerHeight);
+			this.buffer_2.resizeCanvas(window.innerWidth, window.innerHeight);
 		};
 
 		const updateScroll = () => {
-			// let target = window.scrollY || window.pageYOffset;
-			// let pos = p.constrain(target, 0, this.scrollHeight + 1); //!!! +1??
-			// this.scrollVal = 100 - pos / (this.scrollHeight / 100);
+			let target = window.scrollY || window.pageYOffset;
+			this.scroll = target;
+			this.scrollOff.x = p.sin(this.scroll / 1000 + 1) * 0.75;
+			this.scrollOff.y = p.cos(this.scroll / 1000 + 1) * 0.5;
+			console.log(this.mouse.x, this.mouse.y);
 		};
 
 		window.addEventListener("scroll", updateScroll);
 
-		class GPoint {
-			public pos: number[];
-			public color: number[];
-			// private radius: number;
-			// private offset: number;
-			// private mobile: boolean;
+		window.addEventListener("pointermove", (e) => {
+			let ratio = window.innerHeight / window.innerWidth;
 
-			constructor(
-				_x: number,
-				_y: number,
-				_r: number,
-				_g: number,
-				_b: number
-				// _radius: number,
-				// _offset: number,
-				// _mobile: boolean,
-			) {
-				this.pos = [_x, _y];
-				this.color = [_r, _g, _b];
-				// this.radius = _radius;
-				// this.offset = _offset;
-				// this.mobile = _mobile;
-				// this.setScroll(100);
+			if (window.innerHeight > window.innerWidth) {
+				this.mouse.x = (e.pageX - window.innerWidth / 2) / window.innerWidth;
+				this.mouse.y =
+					((e.pageY - this.scroll - window.innerHeight / 2) /
+						window.innerHeight) *
+					-1 *
+					ratio;
+			} else {
+				this.mouse.x =
+					(e.pageX - window.innerWidth / 2) / window.innerWidth / ratio;
+				this.mouse.y =
+					((e.pageY - this.scroll - window.innerHeight / 2) /
+						window.innerHeight) *
+					-1;
 			}
-		}
+		});
 	};
 }
 

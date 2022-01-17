@@ -2,11 +2,15 @@ precision highp float;
 
 attribute vec3 aPosition;
 attribute vec2 aTexCoord;
+varying vec2 vTexCoord;
 
 // We always must do at least one thing in the vertex shader:
 // tell the pixel where on the screen it lives:
 
 void main() {
+
+  vTexCoord = aTexCoord;
+
   // copy the position data into a vec4, using 1.0 as the w component
   vec4 positionVec4 = vec4(aPosition, 1.0);
   
