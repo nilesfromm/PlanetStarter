@@ -26,8 +26,9 @@ export class PlanetGradient {
 	private mouseDist: number;
 	private scroll: number;
 	private scrollOff: IMouse;
+	private brightness: number;
 
-	constructor($viewport: HTMLElement) {
+	constructor($viewport: HTMLElement, brightness:number) {
 		this.debug = false;
 		this.viewport = $viewport;
 		this.mobile = isMobile();
@@ -40,6 +41,7 @@ export class PlanetGradient {
 		this.mouseDist = 0;
 		this.scroll = 0;
 		this.scrollOff = { x: 0.75, y: 0.0 };
+		this.brightness = brightness;
 
 		new p5(this.sketch, this.viewport);
 		console.log(this.mobile);
@@ -90,17 +92,18 @@ export class PlanetGradient {
 				y: p.mouseY / p.height - 0.5,
 			};
 
+			// console.log(mouse);
+
 			let pos = [
-				mouse.x * 0.5 - this.scrollOff.x,
-				mouse.y * 0.5 * mouse.x + this.scrollOff.y,
-				mouse.x * 0.5 + this.scrollOff.x,
-				mouse.y * 0.5 * -mouse.x - this.scrollOff.y,
+				this.mobile ? -this.scrollOff.x : mouse.x * 0.5 - this.scrollOff.x,
+				this.mobile ? this.scrollOff.y : mouse.y * 0.5 * mouse.x + this.scrollOff.y,
+				this.mobile ? this.scrollOff.x : mouse.x * 0.5 + this.scrollOff.x,
+				this.mobile ? -this.scrollOff.y : mouse.y * 0.5 * -mouse.x - this.scrollOff.y,
 			];
 
 			this.mouseDist = p.sqrt(p.movedX * p.movedX + p.movedY * p.movedY);
 			this.mouseDist = p.constrain(this.mouseDist, 0, 2) / 2;
 
-			console.log(p.width, p.height);
 			this.buffer_1.shader(this.shader1);
 
 			this.shader1.setUniform("u_resolution", [p.width, p.height]);
@@ -108,7 +111,7 @@ export class PlanetGradient {
 			this.shader1.setUniform("u_mouseDist", this.mouseDist);
 			this.shader1.setUniform(
 				"u_color",
-				[0.894, 0.0, 0.38, 0.0, 0.6157, 0.886]
+				[0.0, 0.6157, 0.886, 0.894, 0.0, 0.38]
 			);
 			this.shader1.setUniform("u_pos", pos);
 			this.shader1.setUniform("u_buffer", this.buffer_1);
@@ -121,9 +124,10 @@ export class PlanetGradient {
 			this.shader2.setUniform("u_buffer", this.buffer_1);
 			this.shader2.setUniform(
 				"u_color",
-				[0.894, 0.0, 0.38, 0.0, 0.6157, 0.886]
+				[0.0, 0.6157, 0.886, 0.894, 0.0, 0.38]
 			);
 			this.shader2.setUniform("u_pos", pos);
+			this.shader2.setUniform("u_brightness", this.brightness);
 
 			this.buffer_2.rect(0, 0, p.width, p.height);
 
@@ -148,9 +152,9 @@ export class PlanetGradient {
 		const updateScroll = () => {
 			let target = window.scrollY || window.pageYOffset;
 			this.scroll = target;
-			this.scrollOff.x = p.sin(this.scroll / 1000 + 1) * 0.75;
-			this.scrollOff.y = p.cos(this.scroll / 1000 + 1) * 0.5;
-			console.log(this.mouse.x, this.mouse.y);
+			this.scrollOff.x = this.mobile ? p.sin(this.scroll / 1000 + 1) * 0.75 : p.sin(this.scroll / 1000 + 1) * 0.75;
+			this.scrollOff.y = this.mobile ? p.cos(this.scroll / 1000 + 1) * 0.9 : p.cos(this.scroll / 1000 + 1) * 0.65;
+			// console.log(this.mouse.x, this.mouse.y);
 		};
 
 		window.addEventListener("scroll", updateScroll);
